@@ -11,6 +11,7 @@ namespace SRbot
 			Configure.LoadSensitive();
 			Configure.LoadBanList();
 			Configure.LoadPermissionList();
+			Configure.LoadRecallList();
 			ReadMsg.Start();
 			ProcessGroupMsg.Start();
 		}
@@ -19,6 +20,7 @@ namespace SRbot
 			Configure.SaveSensitive();
 			Configure.SaveBanList();
 			Configure.SavePermissionList();
+			Configure.SaveRecallList();
 			ReadMsg.Abort();
 			ProcessGroupMsg.Abort();
 		}

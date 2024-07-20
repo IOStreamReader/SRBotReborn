@@ -65,13 +65,23 @@ namespace SRBotReborn
 				{
 					GroupMessage tmp = RecvGroupMsgQueue.Dequeue();
 					bool Reply = true;
-					if(Permission.IsBanned(tmp.sender.user_id)||Permission.SpamCheck(tmp.sender.user_id))
+					if(tmp.sender.user_id==1418780411||tmp.sender.user_id==tmp.self_id)
+						Reply= false;
+					if(Permission.IsBanned(tmp.sender.user_id)||Permission.SpamCheck(tmp.sender.user_id)||Permission.GetPermission(tmp.sender.user_id)==Permission.PermissionLevel.Blacklist)
 					{
 						Reply = false;
 					}
 					if(Permission.SensitiveCheck(tmp.message))
 					{
 						Permission.TempBan(tmp.sender.user_id, 60);
+						BotManagement.Log("Sensitive message from " + tmp.sender.user_id + " in group " + tmp.group_id + " : " + tmp.message, BotManagement.LogLevel.Warning);
+						Reply = false;
+						
+					}
+					if (BotCommands.CheckRecall(tmp))
+					{
+						BotCommands.DeleteMsg(tmp);
+						BotManagement.Log("Recall message from " + tmp.sender.user_id + " in group " + tmp.group_id + " : " + tmp.message, BotManagement.LogLevel.Info);
 						Reply = false;
 					}
 					if (Reply)

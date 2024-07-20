@@ -44,6 +44,17 @@ namespace SRBotReborn
 			}
 			sr.Close();
 		}
+		public static void LoadRecallList()
+		{
+			if (!File.Exists("RecallList.txt"))
+				return;
+			StreamReader sr = new StreamReader("RecallList.txt");
+			while (!sr.EndOfStream)
+			{
+				Permission.RecallList.Add(sr.ReadLine());
+			}
+			sr.Close();
+		}
 		public static void SavePermissionList()
 		{
 			StreamWriter sw = new StreamWriter("PermissionList.txt");
@@ -68,6 +79,15 @@ namespace SRBotReborn
 			foreach (KeyValuePair<Int64, Int64> kv in Permission.BanList)
 			{
 				sw.WriteLine(kv.Key + " " + kv.Value);
+			}
+			sw.Close();
+		}
+		public static void SaveRecallList()
+		{
+			StreamWriter sw = new StreamWriter("RecallList.txt");
+			foreach (string s in Permission.RecallList)
+			{
+				sw.WriteLine(s);
 			}
 			sw.Close();
 		}
