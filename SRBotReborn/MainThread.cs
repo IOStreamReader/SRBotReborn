@@ -8,19 +8,13 @@ namespace SRbot
 		public static Thread ProcessGroupMsg = new Thread(new ThreadStart(BotEngine.ProcessGroupMsg));
 		public static void Main(string[] args)
 		{
-			Configure.LoadSensitive();
-			Configure.LoadBanList();
-			Configure.LoadPermissionList();
-			Configure.LoadRecallList();
+			Configure.LoadAll();
 			ReadMsg.Start();
 			ProcessGroupMsg.Start();
 		}
 		~MainThread()
 		{
-			Configure.SaveSensitive();
-			Configure.SaveBanList();
-			Configure.SavePermissionList();
-			Configure.SaveRecallList();
+			Configure.SaveAll();
 			ReadMsg.Abort();
 			ProcessGroupMsg.Abort();
 		}

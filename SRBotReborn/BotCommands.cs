@@ -126,7 +126,7 @@ namespace SRBotReborn
 		}
 		public static void livedebug(BotEngine.GroupMessage msg)
 		{
-			string cmdargs = msg.message.Substring(10);
+			string cmdargs = msg.message.Substring(11);
 			if (cmdargs.StartsWith("permset"))
 			{
 				cmdargs = cmdargs.Substring(8);
@@ -160,9 +160,7 @@ namespace SRBotReborn
 			}
 			else if (cmdargs == "saveall")
 			{
-				Configure.SaveSensitive();
-				Configure.SavePermissionList();
-				Configure.SaveBanList();
+				Configure.SaveAll();
 				BotEngine.SendGroupMsg(msg.group_id, "全部配置已保存");
 				BotManagement.Log("全部配置已保存", BotManagement.LogLevel.Info);
 			}

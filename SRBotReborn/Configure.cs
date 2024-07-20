@@ -9,6 +9,20 @@ namespace SRBotReborn
 {
 	public static class Configure
 	{
+		public static void LoadAll()
+		{
+			LoadSensitive();
+			LoadBanList();
+			LoadPermissionList();
+			LoadRecallList();
+		}
+		public static void SaveAll()
+		{
+			SaveSensitive();
+			SaveBanList();
+			SavePermissionList();
+			SaveRecallList();
+		}
 		public static void LoadSensitive()
 		{
 			if (!File.Exists("Sensitive.txt"))
