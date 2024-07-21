@@ -14,7 +14,7 @@ namespace SRBotReborn
 			if (false)
 			{
 			}
-			else if (msg.message.Contains("贾") || msg.message.StartsWith("jrz"))
+			else if (msg.message.Contains("贾") || msg.message.Contains("jrz"))
 			{
 				jrz(msg.group_id, msg.sender);
 			}
@@ -36,7 +36,13 @@ namespace SRBotReborn
 				string abbrev = msg.message.Substring(9);
 				nbnhhsh(abbrev, msg.group_id);
 			}
-			
+			else if (msg.message.StartsWith("/5kcy"))
+			{
+				string args = msg.message.Substring(6);
+				string text1 = args.Substring(0, args.IndexOf(' '));
+				string text2 = args.Substring(args.IndexOf(' ') + 1);
+				fivekcy(text1, text2, msg.group_id);
+			}
 		}
 		public static void jrz(long gid,BotEngine.Sender sender)
 		{
@@ -107,6 +113,13 @@ namespace SRBotReborn
 			{
 				BotEngine.SendGroupMsg(gid, "可能的全称有：" + string.Join(" ", result));
 			}
+		}
+		public static void fivekcy(string text1,string text2, Int64 gid)
+		{
+			BotManagement.Log("text1=" + text1 + " text2=" + text2, BotManagement.LogLevel.Debug);
+			string url= "https://gsapi.cbrx.io/image?top="+text1+"&amp;bottom="+text2;
+			BotEngine.SendGroupMsg(gid, "[CQ:image,url="+url+"]");
+			BotManagement.Log("url="+url, BotManagement.LogLevel.Debug);
 		}
 		public static void DeleteMsg(BotEngine.GroupMessage msg)
 		{
