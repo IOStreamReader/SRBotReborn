@@ -9,12 +9,19 @@ namespace SRBotReborn
 {
 	public static class Configure
 	{
+		public static Thread Autosave= new Thread(new ThreadStart(Tick10m));
+		public static void Tick10m()
+		{
+			SaveAll();
+			Thread.Sleep(600000);
+		}
 		public static void LoadAll()
 		{
 			LoadSensitive();
 			LoadBanList();
 			LoadPermissionList();
 			LoadRecallList();
+			LoadGroupFunctionsList();
 		}
 		public static void SaveAll()
 		{
@@ -22,6 +29,7 @@ namespace SRBotReborn
 			SaveBanList();
 			SavePermissionList();
 			SaveRecallList();
+			SaveGroupFunctionsList();
 		}
 		public static void LoadSensitive()
 		{
@@ -69,6 +77,19 @@ namespace SRBotReborn
 			}
 			sr.Close();
 		}
+		public static void LoadGroupFunctionsList()
+		{
+			if (!File.Exists("GroupFunctionsList.txt"))
+				return;
+			StreamReader sr = new StreamReader("GroupFunctionsList.txt");
+			while (!sr.EndOfStream)
+			{
+				string line= sr.ReadLine();
+				string[] tmp = line.Split(':');
+				Permission.GroupFunctionsList.Add(Int64.Parse(tmp[0]), Permission.GroupFunctions.Parse(tmp[1]));
+			}
+			sr.Close();
+		}
 		public static void SavePermissionList()
 		{
 			StreamWriter sw = new StreamWriter("PermissionList.txt");
@@ -102,6 +123,15 @@ namespace SRBotReborn
 			foreach (string s in Permission.RecallList)
 			{
 				sw.WriteLine(s);
+			}
+			sw.Close();
+		}
+		public static void SaveGroupFunctionsList()
+		{
+			StreamWriter sw = new StreamWriter("GroupFunctionsList.txt");
+			foreach (KeyValuePair<Int64, Permission.GroupFunctions> kv in Permission.GroupFunctionsList)
+			{
+				sw.WriteLine(kv.Key + ":" + kv.Value.ToString());
 			}
 			sw.Close();
 		}
