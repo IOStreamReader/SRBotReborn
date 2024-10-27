@@ -67,7 +67,7 @@ namespace SRBotReborn
 					bool Reply = true;
 					if(tmp.sender.user_id==1418780411||tmp.sender.user_id==tmp.self_id)
 						Reply= false;
-					if(Permission.IsBanned(tmp.sender.user_id)||Permission.SpamCheck(tmp.sender.user_id)||Permission.GetPermission(tmp.sender.user_id)==Permission.PermissionLevel.Blacklist)
+					if(Permission.IsBanned(tmp.sender.user_id)||Permission.SpamCheck(tmp.sender.user_id)||Permission.GetGlobalPermission(tmp.sender.user_id)==Permission.PermissionLevel.Blacklist||Permission.GetGroupPermission(tmp.sender.user_id,tmp.group_id)==Permission.PermissionLevel.Blacklist)
 					{
 						Reply = false;
 					}

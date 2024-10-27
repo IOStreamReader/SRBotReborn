@@ -61,8 +61,17 @@ namespace SRBotReborn
 			StreamReader sr = new StreamReader("PermissionList.txt");
 			while (!sr.EndOfStream)
 			{
-				string[] tmp = sr.ReadLine().Split(' ');
-				Permission.PermissionList.Add(Int64.Parse(tmp[0]), (Permission.PermissionLevel)Enum.Parse(typeof(Permission.PermissionLevel), tmp[1]));
+				string tmp = sr.ReadLine();
+				if (tmp.Contains(":") && tmp.Contains(","))
+				{
+					Int64 qid = Int64.Parse(tmp.Substring(tmp.IndexOf(":")));
+					string[] perms=tmp.Substring(tmp.IndexOf(":")).Split(";");
+					Permission.PermissionList.Add(qid, new Dictionary<long, Permission.PermissionLevel>());
+					foreach (string perm in perms)
+					{
+						Permission.PermissionList[qid].Add(Int64.Parse(perm.Split(',')[0]), (Permission.PermissionLevel)Int64.Parse(perm.Split(',')[1]));
+					}
+				}
 			}
 			sr.Close();
 		}
@@ -93,9 +102,13 @@ namespace SRBotReborn
 		public static void SavePermissionList()
 		{
 			StreamWriter sw = new StreamWriter("PermissionList.txt");
-			foreach (KeyValuePair<Int64, Permission.PermissionLevel> kv in Permission.PermissionList)
+			foreach (KeyValuePair<Int64, Dictionary<Int64,Permission.PermissionLevel>> kv in Permission.PermissionList)
 			{
-				sw.WriteLine(kv.Key + " " + kv.Value);
+				sw.Write(kv.Key+":");
+				foreach(KeyValuePair<Int64,Permission.PermissionLevel> qgp in kv.Value)
+				{
+					sw.Write(qgp.Key+","+qgp.Value.ToString()+";");
+				}
 			}
 			sw.Close();
 		}

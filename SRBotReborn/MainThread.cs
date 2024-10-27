@@ -9,7 +9,9 @@ namespace SRbot
 		public static void Main(string[] args)
 		{
 			Console.WriteLine("SRBot is loading");
-			Console.WriteLine("Build Version 240729b");
+			Console.WriteLine("Build Version 241025Z");
+			Console.WriteLine("Press ANY key to start the bot.");
+			Console.ReadKey();
 			Configure.LoadAll();
 			Configure.Autosave.Start();
 			ReadMsg.Start();

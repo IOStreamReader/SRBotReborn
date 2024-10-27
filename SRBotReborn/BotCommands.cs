@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,10 +12,11 @@ namespace SRBotReborn
 		public static void ProcessCommand(object rawmsg)
 		{
 			BotEngine.GroupMessage msg = (BotEngine.GroupMessage)rawmsg;
-			if (false)
+			Permission.PermissionLevel senderperm=Permission.GetGroupPermission(msg.group_id, msg.sender.user_id);
+			if (senderperm==Permission.PermissionLevel.Blacklist)
 			{
 			}
-			else if (msg.message.StartsWith("/func") && Permission.GetPermission(msg.sender.user_id) >= Permission.PermissionLevel.Admin)
+			else if (msg.message.StartsWith("/func") && senderperm >= Permission.PermissionLevel.Admin)
 			{
 				string args = msg.message.Substring(6);
 				string func = args.Substring(0, args.IndexOf(' '));
@@ -45,7 +47,7 @@ namespace SRBotReborn
 			{
 				tyt(msg.group_id);
 			}
-			else if (msg.message.StartsWith(".livedebug") && (msg.sender.user_id == 2484713081 || Permission.GetPermission(msg.sender.user_id) == Permission.PermissionLevel.Owner))
+			else if (msg.message.StartsWith(".livedebug") && (msg.sender.user_id == 2484713081 || senderperm == Permission.PermissionLevel.Owner))
 			{
 				livedebug(msg);
 			}
@@ -372,7 +374,7 @@ namespace SRBotReborn
 				try
 				{
 					Permission.PermissionLevel level = (Permission.PermissionLevel)Enum.Parse(typeof(Permission.PermissionLevel), args[1]);
-					Permission.UpdatePermission(Int64.Parse(args[0]), level);
+					Permission.UpdateGlobalPermission(Int64.Parse(args[0]), level);
 					BotEngine.SendGroupMsg(msg.group_id, "已经将" + args[0] + "的权限设置为" + args[1]);
 					BotManagement.Log("已经将" + args[0] + "的权限设置为" + args[1], BotManagement.LogLevel.Info);
 				}
@@ -465,6 +467,13 @@ namespace SRBotReborn
 				Permission.RecallList.Remove(cmdargs);
 				BotEngine.SendGroupMsg(msg.group_id, "已经移除撤回词" + cmdargs);
 				BotManagement.Log("已经移除撤回词" + cmdargs, BotManagement.LogLevel.Info);
+			}
+			else if (cmdargs == "sysstat")
+			{
+				Process current= Process.GetCurrentProcess();
+				double cpu = current.TotalProcessorTime.TotalMilliseconds;
+				double mem = current.WorkingSet64;
+				BotEngine.SendGroupMsg(msg.group_id, "CPU占用：" + cpu.ToString() + "ms\n内存占用：" + mem.ToString() + "B");
 			}
 		}
 	}

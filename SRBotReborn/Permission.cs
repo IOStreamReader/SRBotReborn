@@ -11,7 +11,7 @@ namespace SRBotReborn
 		public static List<string> SensitiveList= new List<string>();
 		public static Dictionary<Int64,Int64> BanList = new Dictionary<Int64, Int64>();
 		public static List<string> RecallList= new List<string>();
-		public static Dictionary<Int64, PermissionLevel> PermissionList = new Dictionary<Int64, PermissionLevel>();
+		public static Dictionary<Int64,Dictionary<Int64,PermissionLevel>> PermissionList= new Dictionary<Int64, Dictionary<Int64, PermissionLevel>>();
 		public static Dictionary<Int64,GroupFunctions> GroupFunctionsList = new Dictionary<Int64, GroupFunctions>();
 		public static void TempBan(Int64 qid, Int64 time)
 		{
@@ -83,22 +83,68 @@ namespace SRBotReborn
 		{
 			return SensitiveList.Any(msg.Contains);
 		}
-		public static void UpdatePermission(Int64 qid, PermissionLevel level)
+		public static void UpdateGlobalPermission(Int64 qid, PermissionLevel level)
 		{
+			Dictionary<Int64, PermissionLevel> Default = new Dictionary<Int64, PermissionLevel>();
+			Default.Add(-1, PermissionLevel.Normal);
 			if (PermissionList.ContainsKey(qid))
 			{
-				PermissionList[qid] = level;
+				if (PermissionList[qid].ContainsKey(-1))
+					PermissionList[qid][-1] = level;
+				else
+				{
+					PermissionList[qid].Add(-1, level);
+				}
 			}
 			else
 			{
-				PermissionList.Add(qid, level);
+				PermissionList.Add(qid, Default);
 			}
 		}
-		public static PermissionLevel GetPermission(Int64 qid)
+		public static void UpdateGroupPermission(Int64 qid,Int64 gid, PermissionLevel level)
+		{
+			if (PermissionList.ContainsKey(qid))
+				PermissionList[qid][gid] = level;
+			else
+			{
+				PermissionList.Add(qid, new Dictionary<Int64, PermissionLevel>());
+				PermissionList[qid].Add(gid, level);
+			}
+		}
+		public static PermissionLevel GetGlobalPermission(Int64 qid)
+		{
+			// gid -1 for global
+			if (PermissionList.ContainsKey(qid))
+			{
+				if (PermissionList[qid].ContainsKey(-1))
+					return PermissionList[qid][-1];
+				else
+				{
+					PermissionList[qid].Add(-1, PermissionLevel.Normal);
+					return PermissionLevel.Normal;
+				}
+			}
+			else
+			{
+				Dictionary<Int64,PermissionLevel> Default = new Dictionary<Int64, PermissionLevel>();
+				Default.Add(-1, PermissionLevel.Normal);
+				PermissionList.Add(qid, Default);
+				return PermissionLevel.Normal;
+			}
+		}
+		public static PermissionLevel GetGroupPermission(Int64 qid,Int64 gid)
 		{
 			if (PermissionList.ContainsKey(qid))
 			{
-				return PermissionList[qid];
+				if (PermissionList[qid].ContainsKey(gid))
+					return PermissionList[qid][gid];
+				else if (PermissionList[qid].ContainsKey(-1))
+					return PermissionList[qid][-1];
+				else
+				{
+					PermissionList[qid].Add(gid, PermissionLevel.Normal);
+					return PermissionLevel.Normal;
+				}
 			}
 			else
 			{
